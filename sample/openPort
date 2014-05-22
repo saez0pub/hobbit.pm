@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+#
+# monitor access to a list of addresses: ports
+# /usr/local/lib/hobbit/client/ext/openPort.pl
+#
+# configuration file lines format is :
+#  'checkName' => "host port",
+# example :
+#  'gruyere' => "gruyere01b.int33.cvf 22",
+#
+# configuration file and script must be placed in same directory
+
+use strict;
+use File::stat;
+
+# Parameters
+my $timeoutDuration=5;
+
+# Get name and path
+my $programDir=$0;
+$programDir =~ s:[^/]*$::;
+my $programName=$0;
+$programName =~ s:^.*/::;
+$programName =~ s:\.[^.]*$::;
+require "${programDir}/hobbit.pm";
+
+# Read conf
+my %checkList= do "${programDir}/${programName}.cfg";
+
+foreach my ${checkName} (keys %checkList) {
+  my $check=hobbit->new( name => "$checkName");
+  my $addressPort=$checkList{$checkName};
+  my $getNc="nc -vz -w ${timeoutDuration} ${addressPort}";
+  $check->messageHeader(${addressPort});
+  my $outputLine;
+  open my $FH,"$getNc 2>&1 |" or $check->messageLevel("red","unable to launch $getNc");
+  while (<$FH>) {
+    chomp;
+    $check->messageLevel("green",$_);
+  }
+  close $FH;
+  if ( $? != 0 ) {
+    $check->messageLevel("red","code retour : $?");
+  }
+  $check->messageFooter;
+  $check->finalOutput;
+}
+
