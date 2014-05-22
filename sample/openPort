@@ -6,7 +6,7 @@
 # configuration file lines format is :
 #  'checkName' => "host port",
 # example :
-#  'gruyere' => "gruyere01b.int33.cvf 22",
+#  'myself' => "localhost 22",
 #
 # configuration file and script must be placed in same directory
 
