@@ -17,7 +17,7 @@ use IO::Socket;
 
 # Parameters
 my $timeoutDuration=5;
-
+
 # Get name and path
 my $programDir=$0;
 $programDir =~ s:[^/]*$::;
@@ -38,7 +38,7 @@ foreach my ${checkName} (keys %checkList) {
                                 PeerAddr    => $address,
                                 PeerPort    => $port,
                                 Reuse       => 1,
-                                Timeout     => 2)
+                                Timeout     => $timeoutDuration)
   or return undef;
   };
   if ($socket) {
