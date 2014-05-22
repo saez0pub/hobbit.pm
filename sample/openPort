@@ -12,6 +12,8 @@
 
 use strict;
 use File::stat;
+use hobbit;
+use IO::Socket;
 
 # Parameters
 my $timeoutDuration=5;
@@ -22,26 +24,30 @@ $programDir =~ s:[^/]*$::;
 my $programName=$0;
 $programName =~ s:^.*/::;
 $programName =~ s:\.[^.]*$::;
-require "${programDir}/hobbit.pm";
 
 # Read conf
 my %checkList= do "${programDir}/${programName}.cfg";
 
 foreach my ${checkName} (keys %checkList) {
   my $check=hobbit->new( name => "$checkName");
-  my $addressPort=$checkList{$checkName};
-  my $getNc="nc -vz -w ${timeoutDuration} ${addressPort}";
-  $check->messageHeader(${addressPort});
+  (my $address, my $port)=split / /, $checkList{$checkName};
+  $check->messageHeader("${address}:${port}");
   my $outputLine;
-  open my $FH,"$getNc 2>&1 |" or $check->messageLevel("red","unable to launch $getNc");
-  while (<$FH>) {
-    chomp;
-    $check->messageLevel("green",$_);
+  my $socket = eval {
+  return IO::Socket::INET->new( Proto       => "tcp",
+                                PeerAddr    => $address,
+                                PeerPort    => $port,
+                                Reuse       => 1,
+                                Timeout     => 2)
+  or return undef;
+  };
+  if ($socket) {
+    $check->messageLevel("green","${address}:${port} is opened.");
+    eval { return $socket->close; };
+  } else {
+    $check->messageLevel("red","${address}:${port} is unreachable.");
   }
-  close $FH;
-  if ( $? != 0 ) {
-    $check->messageLevel("red","code retour : $?");
-  }
+
   $check->messageFooter;
   $check->finalOutput;
 }
