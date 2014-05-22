@@ -17,7 +17,7 @@ use IO::Socket;
 
 # Parameters
 my $timeoutDuration=5;
-
+
 # Get name and path
 my $programDir=$0;
 $programDir =~ s:[^/]*$::;
