@@ -8,10 +8,14 @@ installation
 
 To install this module type the following:
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+To build a .deb package from this module:
+
+    debuild --check-dirname-level 0 -i -us -uc -b
 
 usage
 -----
