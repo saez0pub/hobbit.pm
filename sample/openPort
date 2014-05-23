@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+#
+# monitor access to a list of addresses: ports
+# /usr/local/lib/hobbit/client/ext/openPort.pl
+#
+# configuration file lines format is :
+#  'checkName' => "host port",
+# example :
+#  'myself' => "localhost 22",
+#
+# configuration file and script must be placed in same directory
+
+use strict;
+use File::stat;
+use hobbit;
+use IO::Socket;
+
+# Parameters
+my $timeoutDuration=5;
+
+# Get name and path
+my $programDir=$0;
+$programDir =~ s:[^/]*$::;
+my $programName=$0;
+$programName =~ s:^.*/::;
+$programName =~ s:\.[^.]*$::;
+
+# Read conf
+my %checkList= do "${programDir}/${programName}.cfg";
+
+foreach my ${checkName} (keys %checkList) {
+  my $check=hobbit->new( name => "$checkName");
+  (my $address, my $port)=split / /, $checkList{$checkName};
+  $check->messageHeader("${address}:${port}");
+  my $outputLine;
+  my $socket = eval {
+  return IO::Socket::INET->new( Proto       => "tcp",
+                                PeerAddr    => $address,
+                                PeerPort    => $port,
+                                Reuse       => 1,
+                                Timeout     => $timeoutDuration)
+  or return undef;
+  };
+  if ($socket) {
+    $check->messageLevel("green","${address}:${port} is opened.");
+    eval { return $socket->close; };
+  } else {
+    $check->messageLevel("red","${address}:${port} is unreachable.");
+  }
+
+  $check->messageFooter;
+  $check->finalOutput;
+}
+
