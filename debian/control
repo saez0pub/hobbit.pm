@@ -1,7 +1,7 @@
 Source: libhobbit-perl
 Section: perl
 Priority: optional
-Maintainer: Some one someone@example.com
+Maintainer: Some One <someone@example.com>
 Build-Depends: debhelper (>= 8)
 Build-Depends-Indep: perl
 Standards-Version: 3.9.2
