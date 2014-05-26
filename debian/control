@@ -1,0 +1,34 @@
+Source: libhobbit-perl
+Section: perl
+Priority: optional
+Maintainer: Some one someone@example.com
+Build-Depends: debhelper (>= 8)
+Build-Depends-Indep: perl
+Standards-Version: 3.9.2
+Homepage: http://search.cpan.org/dist/hobbit/
+
+Package: libhobbit-perl
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends}, xymon-client
+Description: check management
+ This hobbit modules implements an easy way to create hobbit checks with perl.
+ .
+ It produces output as HTML, each line being colored regarding its level.
+ .
+ Available levels are :
+ .
+ green
+ .
+ yellow
+ .
+ red
+ .
+ clear
+ .
+ purple
+ .
+ Initial levl defaults to clear.
+ .
+ Available exported functions are :
+ .
+ This description was automagically extracted from the module by dh-make-perl.
