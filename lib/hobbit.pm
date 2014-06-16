@@ -232,7 +232,7 @@ sub messageFooter {
 sub messageLevel {
   (my $this, my @msgLevel) = @_;
   my $msgTxtLvl;
-  @msgLevel = ( @msgLevel , "green" , "OK" ) if @msgLevel == ();
+  @msgLevel = ( @msgLevel , "green" , "OK" ) unless @msgLevel;
   while ( (my $msgLvl,my $msgTxt, @msgLevel ) = @msgLevel ) {
     $msgTxt.="&nbsp;" if ! $msgTxt=~ m/^$/;
     $msgTxtLvl .= "<tr><td bgcolor=".$this->getLevelColors($msgLvl)."><font color=".$this->getLevelTxtColors($msgLvl).">".${msgTxt}."</font></td></tr>\n";
