@@ -133,6 +133,7 @@ sub new {
   $ENV{BB} = "" unless $ENV{BB};
   $ENV{BBDISP} = "" unless $ENV{BBDISP};
   $ENV{MACHINE} = `hostname -f` unless $ENV{MACHINE};
+  chomp $ENV{MACHINE};
 
   # initialisation from parameters
   $this->{checkName} = $initValues{name};
