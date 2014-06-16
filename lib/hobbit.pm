@@ -130,6 +130,9 @@ sub new {
   $this->{levelTxtColors} = \%levelTxtColors;
   $this->{levels} = keys %levelHierarchy;
   $this->{startTime} = time;
+  $ENV{BB} = "" unless $ENV{BB};
+  $ENV{BBDISP} = "" unless $ENV{BBDISP};
+  $ENV{MACHINE} = `hostname -f` unless $ENV{MACHINE};
 
   # initialisation from parameters
   $this->{checkName} = $initValues{name};
