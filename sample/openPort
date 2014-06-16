@@ -32,14 +32,13 @@ foreach my ${checkName} (keys %checkList) {
   my $check=hobbit->new( name => "$checkName");
   (my $address, my $port)=split / /, $checkList{$checkName};
   $check->messageHeader("${address}:${port}");
-  my $outputLine;
   my $socket = eval {
-  return IO::Socket::INET->new( Proto       => "tcp",
+    return IO::Socket::INET->new( Proto       => "tcp",
                                 PeerAddr    => $address,
                                 PeerPort    => $port,
                                 Reuse       => 1,
                                 Timeout     => $timeoutDuration)
-  or return undef;
+    or return undef;
   };
   if ($socket) {
     $check->messageLevel("green","${address}:${port} is opened.");
