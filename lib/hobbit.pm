@@ -71,7 +71,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 use Exporter;
 @ISA = qw(Exporter AutoLoader);
 our $VERSION = 0.01;
-our @EXPORT_OK = qw( messageHeader, messageFooter, messageLevel, finalOutput );
+our @EXPORT_OK = qw( messageHeader messageFooter messageLevel finalOutput );
 our @EXPORT    = qw( );
 
 # Uses hires time if available
