@@ -130,6 +130,7 @@ sub new {
   $this->{levelTxtColors} = \%levelTxtColors;
   $this->{levels} = keys %levelHierarchy;
   $this->{startTime} = time;
+  $this->{outputMode} = 'table';
   $ENV{BB} = "" unless $ENV{BB};
   $ENV{BBDISP} = "" unless $ENV{BBDISP};
   $ENV{MACHINE} = `hostname -f` unless $ENV{MACHINE};
@@ -204,7 +205,11 @@ sub messageHeader {
   foreach my $msgHeaderLine (@msgHeaderLines) {
     $msgTxtHeader.=$msgHeaderLine."<br>\n";
   }
-  $msgTxtHeader.="<table width=10 height=10 cellspacing=1 cellpadding=0>\n"; 
+  if ($this->{outputMode} eq 'li'){
+    $msgTxtHeader.="<ul>\n"; 
+  } else {
+    $msgTxtHeader.="<table width=10 height=10 cellspacing=1 cellpadding=0>\n"; 
+  }
   $this->{checkData} .= $msgTxtHeader;
   return 0;
 }
@@ -219,7 +224,11 @@ sub messageHeader {
 
 sub messageFooter {
   (my $this) = @_;
-  $this->{checkData} .= "</table>\n\n";
+  if ($this->{outputMode} eq 'li'){
+    $this->{checkData} .= "</ul>\n\n";
+  } else {
+    $this->{checkData} .= "</table>\n\n";
+  }
   return 0;
 }
 
@@ -239,7 +248,11 @@ sub messageLevel {
   @msgLevel = ( @msgLevel , "green" , "OK" ) unless @msgLevel;
   while ( (my $msgLvl,my $msgTxt, @msgLevel ) = @msgLevel ) {
     $msgTxt.="&nbsp;" if ! $msgTxt=~ m/^$/;
-    $msgTxtLvl .= "<tr><td bgcolor=".$this->getLevelColors($msgLvl)."><font color=".$this->getLevelTxtColors($msgLvl).">".${msgTxt}."</font></td></tr>\n";
+    if ($this->{outputMode} eq 'li'){
+      $msgTxtLvl .= "<li>&${msgLvl} ${msgTxt}</li>\n";
+    } else {
+      $msgTxtLvl .= "<tr><td bgcolor=".$this->getLevelColors($msgLvl)."><font color=".$this->getLevelTxtColors($msgLvl).">".${msgTxt}."</font></td></tr>\n";
+    }
     $this->increaseLevel( $msgLvl );
   }
   $this->{checkData} .= $msgTxtLvl;
@@ -284,6 +297,25 @@ sub finalOutput {
 
 ###############################################################################
 
+=item setOutputMode()
+
+  Sets the output mode, by default, the output is a table, you can choose 'table' or 
+  'li' values.
+  - table : html table with a row by check
+  - li : list whith an element by check
+
+=cut
+
+sub setOutputMode {
+  my ($this, $mode) = @_;
+  if ($mode eq "li"){
+    $this->{outputMode} = 'li';
+  } else {
+    $this->{outputMode} = 'table';
+  }
+}
+
+###############################################################################
 =back
 =cut
 
